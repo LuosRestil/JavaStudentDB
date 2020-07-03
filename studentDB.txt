@@ -1,0 +1,12 @@
+Adam Ant,1,10001,0.000000,*Aa!umfCK^
+Becky Bonway,4,40002,0.000000,huq7!WGxJz
+Chucky Cheese,1,10003,0.000000,jI2vpLp@sv,5,2
+Duck Dodgers,1,10004,0.000000,2rLYO1tjsO
+Egg Emelette,3,30005,0.000000,TF7SPtAkVZ
+Frog McMasters,3,30006,799.000000,LftblzG@x6,6,5
+Gary Gygax,1,10007,0.000000,pNT8$mg7ih
+Harry Houdini,2,20008,0.000000,ZxnP5SzV#4
+Ingrid Ikemyer,2,20009,0.000000,AKf0mzwCOH
+Jake Jacobson,4,40010,0.000000,7kpWtsDXgE
+Karl Keiser,4,40011,0.000000,ZLZbKzrOo9
+Zane Zorbog,3,30001,0.000000,jBDPSCJqdO

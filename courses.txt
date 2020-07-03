@@ -1,0 +1,7 @@
+History 101,600.0
+Mathematics 101,600.0
+English 101,600.0
+Chemistry 101,600.0
+Computer Science 101,600.0
+Ladders,199.0
+Silly Walks,12.34

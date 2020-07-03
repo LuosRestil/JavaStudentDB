@@ -1,5 +1,7 @@
 package com.javatutorial;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,12 +13,33 @@ public class Student {
     private static int idCounter = 1;
     private int id = 0;
     private double balance = 0;
-    private ArrayList<Course> studentCourses = new ArrayList<>();
+    private String password;
+    private ArrayList<Integer> studentCourses = new ArrayList<>();
 
     public Student(String name, int year) {
         this.name = name;
         this.year = year;
         this.id = (idCounter++) + (year * 10000);
+        this.password = generateRandomPassword(10);
+    }
+
+    public Student(String name, int year, int id, double balance, String password) {
+        this.name = name;
+        this.year = year;
+        this.id = id;
+        this.balance = balance;
+        this.password = password;
+    }
+
+    private String generateRandomPassword(int len) {
+        String passSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890$!#@^*";
+        char[] password = new char[len];
+        for (int i = 0; i < len; i++) {
+            int num = (int)(Math.random() * passSet.length());
+
+            password[i] = passSet.charAt(num);
+        }
+        return new String(password);
     }
 
     public void enroll(Map<Integer, Course> courses, Scanner scanner) {
@@ -44,7 +67,7 @@ public class Student {
                         if (answer.equals("y")) {
                             yn = true;
                             // check course isn't in student courses, add course, add to balance
-                            if (studentCourses.contains(course)) {
+                            if (studentCourses.contains(courseNum)) {
                                 System.out.println("You are already enrolled in that course.");
                                 boolean repeatInputValid = false;
                                 while (!repeatInputValid) {
@@ -61,9 +84,10 @@ public class Student {
                                     }
                                 }
                             } else {
-                                studentCourses.add(course);
+                                studentCourses.add(courseNum);
                                 balance += course.getCost();
                                 System.out.println("You are now enrolled in " + course.getName() + ".");
+                                System.out.println(String.format("$%.2f has been charged to your account. Your balance is now $%.2f.", course.getCost(), balance));
                                 boolean repeatInputValid = false;
                                 while (!repeatInputValid) {
                                     System.out.println("Enroll in another course? (y/n) : ");
@@ -115,22 +139,68 @@ public class Student {
         return balance;
     }
 
-    public ArrayList<Course> getStudentCourses() {
+    public String getPassword() {
+        return password;
+    }
+
+    public ArrayList<Integer> getStudentCourses() {
         return studentCourses;
     }
 
-    public void payBalance(double amount) {
-        balance -= amount;
-        if (balance < 0) {
-            balance = 0;
-            double overpay = balance - amount;
-            System.out.println("You have overpayed by " + String.format("$%.2f", overpay) + ". This amount will be returned to your account.");
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void makePayment(Scanner scanner) {
+        System.out.println("~~~ Make Payment ~~~");
+        System.out.println("Your outstanding balance is: " + String.format("%.2f", balance));
+        boolean validInput = false;
+        double amount = 0;
+        while (!validInput) {
+            System.out.print("Enter payment amount: $");
+            String input = scanner.nextLine();
+            try {
+                amount = Double.parseDouble(input);
+                String cents = Double.toString(amount).split("\\.")[1];
+                if (cents.length() > 2) {
+                    System.out.println("Invalid input.");
+                } else {
+                    validInput = true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Invalid input");
+            }
         }
-        System.out.println("Your new balance is " + String.format("%.2f", balance));
+        System.out.println(String.format("Making a payment of $%.2f...", amount));
+        boolean confirmed = false;
+        while (!confirmed) {
+            System.out.println("Are you sure? (y/n) : ");
+            String ans = scanner.nextLine().toLowerCase();
+            if (ans.equals("y")) {
+                confirmed = true;
+                double overpay = Math.abs(balance - amount);
+                balance -= amount;
+                if (balance < 0) {
+                    balance = 0;
+                    System.out.println("You have overpayed by " + String.format("$%.2f", overpay) + ". This amount will be returned to you.");
+                }
+                System.out.println("Thank you for your payment. Your new balance is " + String.format("$%.2f", balance));
+            } else if (ans.equals("n")) {
+                System.out.println("Canceling payment.");
+                confirmed = true;
+            } else {
+                System.out.println("Invalid input.");
+            }
+        }
+    }
+
+    public void addCourse(int id) {
+        studentCourses.add(id);
     }
 
     @Override
     public String toString() {
-        return String.format("%s, year %d, ID#%d, balance: %s", name, year, id, String.format("$%.2f", balance));
+        return String.format("ID#%d, %s, year %d, balance: %s", id, name, year, String.format("$%.2f", balance));
     }
 }
